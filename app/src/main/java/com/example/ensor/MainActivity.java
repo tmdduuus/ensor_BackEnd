@@ -27,12 +27,6 @@ import kotlin.jvm.functions.Function2;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-    private View loginButton, logoutButton;
-    private TextView nickName;
-    private ImageView profileImage;
-    private TextView email;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,48 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         getAppKeyHash();
 
-        loginButton = findViewById(R.id.login);
-        logoutButton = findViewById(R.id.logout);
-        nickName = findViewById(R.id.nickname);
-        email = findViewById(R.id.email);
-
-        Function2<OAuthToken, Throwable, Unit> callback = new Function2<OAuthToken, Throwable, Unit>() {
-            @Override
-            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
-                if(oAuthToken != null){
-                    //
-                }
-                if(throwable != null){
-                    //
-                }
-                updateKakaoLoginUi();
-                return null;
-            }
-        };
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(MainActivity.this)) {
-                    UserApiClient.getInstance().loginWithKakaoTalk(MainActivity.this, callback);
-                }else {
-                    UserApiClient.getInstance().loginWithKakaoAccount(MainActivity.this, callback);
-                }
-            }
-        });
-        // 로그 아웃 버튼
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserApiClient.getInstance().logout(new Function1<Throwable, Unit>() {
-                    @Override
-                    public Unit invoke(Throwable throwable) {
-                        updateKakaoLoginUi();
-                        return null;
-                    }
-                });
-            }
-        });
     }
 
     private void getAppKeyHash(){
@@ -99,27 +51,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateKakaoLoginUi(){
-        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
-            @Override
-            public Unit invoke(User user, Throwable throwable) {
-                if(user != null){
-                    Log.i(TAG, "invoke: id=" + user.getId());
-                    Log.i(TAG, "invoke: email=" + user.getKakaoAccount().getEmail());
-                    Log.i(TAG, "invoke: nickname=" + user.getKakaoAccount().getProfile().getNickname());
-
-                    nickName.setText(user.getKakaoAccount().getProfile().getNickname());
-                    email.setText(user.getKakaoAccount().getEmail());
-                    loginButton.setVisibility(View.GONE);
-                    logoutButton.setVisibility(View.VISIBLE);
-                }else{
-                    nickName.setText(null);
-                    email.setText(null);
-                    loginButton.setVisibility(View.VISIBLE);
-                    logoutButton.setVisibility(View.GONE);
-                }
-                return null;
-            }
-        });
-    }
 }
