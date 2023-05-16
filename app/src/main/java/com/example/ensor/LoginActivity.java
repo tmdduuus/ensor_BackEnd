@@ -31,8 +31,7 @@ import kotlin.jvm.functions.Function2;
             logoutButton = findViewById(R.id.logout);
             nickName = findViewById(R.id.nickname);
             email = findViewById(R.id.email);
-
-            // 카카오가 설치되어 있는지 확인 하는 메서드또한 카카오에서 제공 콜백 객체를 이용함
+            
             Function2<OAuthToken, Throwable, Unit> callback = new  Function2<OAuthToken, Throwable, Unit>() {
                 @Override
                 public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
